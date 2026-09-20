@@ -1,4 +1,12 @@
 # Changelog
+## 2.0.0 - 2026-09-20
+
+- Confirm the current native 27-tool read catalog against the hosted implementation.
+- Retain standalone OAuth and redirect protections; no hosted account-selection or application database dependency is introduced.
+- Require Node.js 22.12 or newer and check Node 22/24 in CI.
+- Update vulnerable dependencies and regenerate the MCP catalog.
+- No hosted creative UI or MCP Apps integrations.
+
 
 ## 1.1.0
 

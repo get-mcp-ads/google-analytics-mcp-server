@@ -2,7 +2,7 @@
   "serverInfo": {
     "name": "@getmcpads/google-analytics-mcp-server",
     "title": "Google Analytics 4 MCP server: 27 read tools.",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "websiteUrl": "https://www.getmcpads.com/tools/ga4",
     "icons": [
       {
@@ -54,7 +54,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -109,7 +109,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -243,7 +243,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -382,7 +382,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -446,7 +446,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -510,7 +510,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -606,7 +606,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -702,7 +702,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -805,7 +805,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -944,7 +944,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1036,7 +1036,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1141,7 +1141,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1210,7 +1210,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1284,7 +1284,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1477,7 +1477,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1541,7 +1541,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1616,7 +1616,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -1827,7 +1827,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2017,7 +2017,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2233,7 +2233,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2336,7 +2336,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2401,7 +2401,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2465,7 +2465,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2569,7 +2569,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2650,7 +2650,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2727,7 +2727,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
@@ -2810,7 +2810,7 @@
                 "type": "null"
               }
             ],
-            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query."
           }
         },
         "required": [
