@@ -3,10 +3,10 @@
   "name": "com.getmcpads/google-analytics",
   "title": "Google Analytics 4",
   "description": "Google Analytics 4 MCP server: 27 read tools.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "websiteUrl": "https://www.getmcpads.com/tools/ga4",
   "repository": {
-    "url": "https://github.com/getmcpads-com/google-analytics-mcp-server",
+    "url": "https://github.com/get-mcp-ads/google-analytics-mcp-server",
     "source": "github"
   },
   "packages": [
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@getmcpads/google-analytics-mcp-server",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "transport": {
         "type": "stdio"
       },

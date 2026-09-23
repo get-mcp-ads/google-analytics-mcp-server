@@ -8,7 +8,7 @@ identifiable people. We take reports seriously.
 **Please do not open a public issue for a security problem.**
 
 Use GitHub's private vulnerability reporting on this repository:
-[Report a vulnerability](https://github.com/getmcpads-com/google-analytics-mcp-server/security/advisories/new).
+[Report a vulnerability](https://github.com/get-mcp-ads/google-analytics-mcp-server/security/advisories/new).
 
 We aim to acknowledge a report within 3 business days and to ship a fix or a
 documented mitigation within 30 days. We will credit you in the advisory unless

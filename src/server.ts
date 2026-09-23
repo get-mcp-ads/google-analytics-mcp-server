@@ -9,7 +9,7 @@ import type { GA4Config } from "./config.js";
 import { registerGA4 } from "./platforms/ga4/index.js";
 import { logger } from "./core/logger.js";
 
-export const PACKAGE_VERSION = "2.0.0";
+export const PACKAGE_VERSION = "2.0.1";
 
 export function createServer(config: GA4Config): McpServer {
   const server = new McpServer(

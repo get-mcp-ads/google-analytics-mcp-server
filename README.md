@@ -6,8 +6,8 @@
 
 Explore traffic, conversions, funnels and property configuration through a read-only MCP server.
 
-[![Release](https://img.shields.io/github/v/release/getmcpads-com/google-analytics-mcp-server?color=2448e5)](https://github.com/getmcpads-com/google-analytics-mcp-server/releases/latest)
-[![CI](https://github.com/getmcpads-com/google-analytics-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/getmcpads-com/google-analytics-mcp-server/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/getmcpads-com/google-analytics-mcp-server?color=2448e5)](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases/latest)
+[![CI](https://github.com/get-mcp-ads/google-analytics-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/get-mcp-ads/google-analytics-mcp-server/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522.12-brightgreen.svg)](package.json)
 
@@ -27,25 +27,25 @@ Run locally with your own platform credentials and a client that supports stdio 
 
 ## What's new
 
-**[v2.0.0: Native tools and security update](https://github.com/getmcpads-com/google-analytics-mcp-server/releases/tag/v2.0.0) · September 20, 2026**
+**[v2.0.1: Native tools and security update](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases/tag/v2.0.1) · September 20, 2026**
 
 - Confirm the current native 27-tool read catalog against the hosted implementation.
 - Retain standalone OAuth and redirect protections; no hosted account-selection or application database dependency is introduced.
 - Require Node.js 22.12 or newer and check Node 22/24 in CI.
 - Update vulnerable dependencies and regenerate the MCP catalog.
 
-[Full changelog](CHANGELOG.md) · [Source synchronization details](SOURCE_SYNC.md) · [All releases](https://github.com/getmcpads-com/google-analytics-mcp-server/releases)
+[Full changelog](CHANGELOG.md) · [Source synchronization details](SOURCE_SYNC.md) · [All releases](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases)
 
 ### Upgrade notes
 
-Requires **Node.js 22.12 or newer**. CI covers Node 22 and 24. Version 2.0.0 drops Node 18 and 20 support. Hosted creative integrations and MCP Apps UI are outside this release.
+Requires **Node.js 22.12 or newer**. CI covers Node 22 and 24. Version 2.0.1 drops Node 18 and 20 support. Hosted creative integrations and MCP Apps UI are outside this release.
 
 ## Install this release
 
 This is a GitHub source release. npm and MCP Registry versions are published separately. The commands below select this exact version; unpinned `npx` examples later in this document select the version currently available on npm.
 
 ```bash
-git clone --branch v2.0.0 --depth 1 https://github.com/getmcpads-com/google-analytics-mcp-server.git
+git clone --branch v2.0.1 --depth 1 https://github.com/get-mcp-ads/google-analytics-mcp-server.git
 cd google-analytics-mcp-server
 npm ci
 npm run build
@@ -90,9 +90,9 @@ the record you use to judge everything else, and often silently. The other serve
 do have write tools, guarded by a mandatory preview. This one has none.
 
 Our ad platform servers with guarded writes:
-[Meta Ads](https://github.com/getmcpads-com/meta-ads-mcp-server) ·
-[Google Ads](https://github.com/getmcpads-com/google-ads-mcp-server) ·
-[TikTok Ads](https://github.com/getmcpads-com/tiktok-ads-mcp-server)
+[Meta Ads](https://github.com/get-mcp-ads/meta-ads-mcp-server) ·
+[Google Ads](https://github.com/get-mcp-ads/google-ads-mcp-server) ·
+[TikTok Ads](https://github.com/get-mcp-ads/tiktok-ads-mcp-server)
 
 ---
 
@@ -197,7 +197,7 @@ claude mcp add google-analytics --env GA4_CLIENT_ID=... --env GA4_CLIENT_SECRET=
 ### From source
 
 ```bash
-git clone https://github.com/getmcpads-com/google-analytics-mcp-server.git
+git clone https://github.com/get-mcp-ads/google-analytics-mcp-server.git
 cd google-analytics-mcp-server
 npm install && npm run build
 cp .env.example .env   # then fill in your credentials
@@ -332,6 +332,6 @@ Run `npm run bundle -- /path/to/output` to build a `.mcpb` desktop bundle from t
 
 ## More from getmcpads
 
-[Meta Ads](https://github.com/getmcpads-com/meta-ads-mcp-server) · [Google Ads](https://github.com/getmcpads-com/google-ads-mcp-server) · [Google Search Console](https://github.com/getmcpads-com/google-search-console-mcp-server) · [TikTok Ads](https://github.com/getmcpads-com/tiktok-ads-mcp-server) · [Pinterest Ads](https://github.com/getmcpads-com/pinterest-ads-mcp-server) · [X Ads](https://github.com/getmcpads-com/x-ads-mcp-server)
+[Meta Ads](https://github.com/get-mcp-ads/meta-ads-mcp-server) · [Google Ads](https://github.com/get-mcp-ads/google-ads-mcp-server) · [Google Search Console](https://github.com/get-mcp-ads/google-search-console-mcp-server) · [TikTok Ads](https://github.com/get-mcp-ads/tiktok-ads-mcp-server) · [Pinterest Ads](https://github.com/get-mcp-ads/pinterest-ads-mcp-server) · [X Ads](https://github.com/get-mcp-ads/x-ads-mcp-server)
 
 Maintained by **Emmanuel** at [getmcpads](https://www.getmcpads.com). Questions: [hello@getmcpads.com](mailto:hello@getmcpads.com).
