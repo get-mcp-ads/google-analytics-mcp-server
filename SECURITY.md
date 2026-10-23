@@ -18,7 +18,8 @@ you ask us not to.
 
 | Version | Supported |
 | ------- | --------- |
-| 1.x     | ✅        |
+| 2.x     | ✅        |
+| 1.x     | ❌        |
 
 ## This server cannot write
 

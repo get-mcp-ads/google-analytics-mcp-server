@@ -6,6 +6,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { GA4Client } from "./client.js";
+import { tokenSourceFor } from "../../core/google-oauth.js";
 import { planGA4Query } from "./query-planner.js";
 import { validateGA4QuerySelection } from "./compatibility-rules.js";
 import { enrichWithCalculatedMetrics } from "./calculated-metrics.js";
@@ -530,7 +531,13 @@ async function runAdvancedFunnelStepCountFallback(
 }
 
 export function registerGA4Tools(server: McpServer, config: GA4Config): void {
-  const client = new GA4Client({ clientId: config.clientId, clientSecret: config.clientSecret, refreshToken: config.refreshToken });
+  const client = new GA4Client({
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
+    refreshToken: config.refreshToken,
+    allowedPropertyIds: config.allowedPropertyIds,
+    tokenSource: tokenSourceFor(config, "GA4_REFRESH_TOKEN"),
+  });
 
   // 1. ga4_health_check
   server.tool(
@@ -553,6 +560,10 @@ export function registerGA4Tools(server: McpServer, config: GA4Config): void {
         try {
           properties = await client.listProperties();
           checks.push({ name: "list_properties", status: "ok", detail: `${properties.length} properties accessible` });
+          const unlistedAllowed = (config.allowedPropertyIds ?? []).filter((id) => !properties.some((property) => property.propertyId === id));
+          if (unlistedAllowed.length > 0) {
+            warnings.push(`These GA4_PROPERTY_IDS entries were not returned for these credentials: ${unlistedAllowed.join(", ")}.`);
+          }
           if (properties.length === 0) {
             warnings.push("No GA4 properties were returned for these credentials.");
             actions.push("Grant the authenticated Google user Viewer access to at least one GA4 property.");
@@ -635,6 +646,9 @@ export function registerGA4Tools(server: McpServer, config: GA4Config): void {
             clientSecretConfigured: Boolean(config.clientSecret),
             refreshTokenConfigured: Boolean(config.refreshToken),
             defaultPropertyIdConfigured: Boolean(config.defaultPropertyId),
+            propertyAllowlist: config.allowedPropertyIds
+              ? { configured: true, count: config.allowedPropertyIds.length }
+              : { configured: false },
           },
           properties: {
             count: properties.length,
