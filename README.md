@@ -28,14 +28,33 @@ Run locally with your own platform credentials and a client that supports stdio 
 
 ## What's new
 
+<!-- release-history:start -->
 **[v2.1.0: Property allowlist and revoked-token handling](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases/tag/v2.1.0) · October 23, 2026**
 
-- Limit every tool to the properties listed in the optional `GA4_PROPERTY_IDS`. Discovery lists only those properties and the accounts that hold them.
-- Report a revoked refresh token (`invalid_grant`) once, with the steps to authorize again, and stop asking Google for a new token.
-- Bound every response body and give the token request a deadline.
-- Require a Node.js release that carries the October 2026 security fixes, and test Node 22, 24 and 26 in CI.
+- Add the optional `GA4_PROPERTY_IDS` allowlist, checked before every request. `ga4_list_properties`, `ga4_list_accounts` and `ga4_health_check` list only the allowed properties and the accounts that hold them. Unset, the server prints a recommendation on stderr. It becomes required in 3.0.0.
+- Refuse a `GA4_PROPERTY_ID` outside `GA4_PROPERTY_IDS` at startup, when both are set.
+- Port the gateway's handling of a refused refresh token (`invalid_grant`, `admin_policy_enforced`): one re-authorization message naming `GA4_REFRESH_TOKEN`, and no further token requests until restart.
+- Give the token request a deadline and bound every response body.
+- Require Node.js `^22.23.4 || ^24.22.1 || >=26.12.1`, warn on stderr at startup and in `npm run doctor` on older releases, and test Node 22, 24 and 26 in CI.
+- Update `@modelcontextprotocol/sdk` to 1.32.1 and regenerate the lockfile.
+- Publish from version tags with `release.yml`, which replaces `publish-mcp.yml`. Add Dependabot.
+- No tool is added or removed: 27 read tools, no write tools.
 
-[Full changelog](CHANGELOG.md) · [Source synchronization details](SOURCE_SYNC.md) · [All releases](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases)
+**Earlier releases**
+
+| Version | Date | Highlights |
+| --- | --- | --- |
+| 2.0.1 | September 23, 2026 | Public repository restored |
+| 2.0.0 | September 20, 2026 | Gateway sync and security fixes |
+| 1.1.0 | September 13, 2026 | Platform capability sync and quality contracts |
+| 1.0.2 | August 30, 2026 | Announce the package version over MCP. |
+| 1.0.1 | August 30, 2026 | Add `server.json` and `mcpName` for the official MCP Registry, under `com.getmcpads/google-analytics`. |
+| 1.0.0 | August 29, 2026 | First open-source release |
+
+[Full changelog](CHANGELOG.md) · [All releases](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases)
+<!-- release-history:end -->
+
+Source synchronization: [SOURCE_SYNC.md](SOURCE_SYNC.md).
 
 ### Upgrade notes
 
