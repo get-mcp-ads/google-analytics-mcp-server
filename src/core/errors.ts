@@ -23,5 +23,8 @@ export class AuthError extends PlatformApiError {
 export function formatMcpToolError(error: unknown): { content: Array<{ type: "text"; text: string }>; isError: true } {
   if (error instanceof PlatformApiError) return { content: [{ type: "text", text: JSON.stringify(error.toMcpError(), null, 2) }], isError: true };
   const msg = error instanceof Error ? error.message : String(error);
-  return { content: [{ type: "text", text: JSON.stringify({ error: msg }, null, 2) }], isError: true };
+  const suggestion = typeof error === "object" && error !== null && typeof (error as { suggestion?: unknown }).suggestion === "string"
+    ? (error as { suggestion: string }).suggestion
+    : undefined;
+  return { content: [{ type: "text", text: JSON.stringify({ error: msg, ...(suggestion ? { suggestion } : {}) }, null, 2) }], isError: true };
 }

@@ -2,8 +2,8 @@
   "manifest_version": "0.3",
   "name": "google-analytics-mcp-server",
   "display_name": "Google Analytics 4 by getmcpads",
-  "version": "2.0.0",
-  "description": "Google Analytics 4 MCP server: 27 read tools.",
+  "version": "2.1.0",
+  "description": "Google Analytics 4 MCP server: 27 read tools, no write tools.",
   "author": {
     "name": "getmcpads",
     "url": "https://www.getmcpads.com"
@@ -29,7 +29,8 @@
         "GA4_CLIENT_ID": "${user_config.ga4_client_id}",
         "GA4_CLIENT_SECRET": "${user_config.ga4_client_secret}",
         "GA4_REFRESH_TOKEN": "${user_config.ga4_refresh_token}",
-        "GA4_PROPERTY_ID": "${user_config.ga4_property_id}"
+        "GA4_PROPERTY_ID": "${user_config.ga4_property_id}",
+        "GA4_PROPERTY_IDS": "${user_config.ga4_property_ids}"
       }
     }
   },
@@ -62,6 +63,14 @@
       "required": false,
       "sensitive": false,
       "default": ""
+    },
+    "ga4_property_ids": {
+      "type": "string",
+      "title": "GA4 Property Ids",
+      "description": "Comma-separated property IDs every tool is limited to. Recommended; required in 3.0.0.",
+      "required": false,
+      "sensitive": false,
+      "default": ""
     }
   },
   "tools_generated": true,
@@ -72,7 +81,7 @@
       "linux"
     ],
     "runtimes": {
-      "node": ">=22.12"
+      "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
     }
   }
 }

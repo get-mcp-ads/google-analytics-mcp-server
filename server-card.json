@@ -1,8 +1,8 @@
 {
   "serverInfo": {
     "name": "@getmcpads/google-analytics-mcp-server",
-    "title": "Google Analytics 4 MCP server: 27 read tools.",
-    "version": "2.0.1",
+    "title": "Google Analytics 4 MCP server: 27 read tools, no write tools.",
+    "version": "2.1.0",
     "websiteUrl": "https://www.getmcpads.com/tools/ga4",
     "icons": [
       {

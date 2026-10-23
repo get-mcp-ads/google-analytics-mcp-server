@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0 - 2026-10-23
+
+- Add the optional `GA4_PROPERTY_IDS` allowlist, checked before every request. `ga4_list_properties`, `ga4_list_accounts` and `ga4_health_check` list only the allowed properties and the accounts that hold them. Unset, the server prints a recommendation on stderr. It becomes required in 3.0.0.
+- Refuse a `GA4_PROPERTY_ID` outside `GA4_PROPERTY_IDS` at startup, when both are set.
+- Port the gateway's handling of a refused refresh token (`invalid_grant`, `admin_policy_enforced`): one re-authorization message naming `GA4_REFRESH_TOKEN`, and no further token requests until restart.
+- Give the token request a deadline and bound every response body.
+- Require Node.js `^22.23.4 || ^24.22.1 || >=26.12.1`, warn on stderr at startup and in `npm run doctor` on older releases, and test Node 22, 24 and 26 in CI.
+- Update `@modelcontextprotocol/sdk` to 1.32.1 and regenerate the lockfile.
+- Publish from version tags with `release.yml`, which replaces `publish-mcp.yml`. Add Dependabot.
+- No tool is added or removed: 27 read tools, no write tools.
+
 ## 2.0.1 - 2026-09-23
 
 - Restore public source hosting under the get-mcp-ads GitHub organization.

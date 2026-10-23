@@ -10,7 +10,7 @@ Explore traffic, conversions, funnels and property configuration through a read-
 [![CI](https://github.com/get-mcp-ads/google-analytics-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/get-mcp-ads/google-analytics-mcp-server/actions/workflows/ci.yml)
 [![Smithery](https://smithery.ai/badge/getmcpads/getmcpads-google-analytics)](https://smithery.ai/servers/getmcpads/getmcpads-google-analytics)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%E2%89%A522.12-brightgreen.svg)](package.json)
+[![Node](https://img.shields.io/badge/node-22.23.4%20%7C%2024.22.1%20%7C%20%E2%89%A526.12.1-brightgreen.svg)](package.json)
 
 [Watch the film](https://www.getmcpads.com/home/film/get-mcp-ads-brand-film-1080p.mp4) · [What's new](#whats-new) · [Install](#install-this-release) · [Tool reference](#tools) · [Try hosted getmcpads](https://www.getmcpads.com/tools/ga4?utm_source=github&utm_medium=readme&utm_campaign=google-analytics)
 
@@ -28,25 +28,27 @@ Run locally with your own platform credentials and a client that supports stdio 
 
 ## What's new
 
-**[v2.0.1: Native tools and security update](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases/tag/v2.0.1) · September 20, 2026**
+**[v2.1.0: Property allowlist and revoked-token handling](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases/tag/v2.1.0) · October 23, 2026**
 
-- Confirm the current native 27-tool read catalog against the hosted implementation.
-- Retain standalone OAuth and redirect protections; no hosted account-selection or application database dependency is introduced.
-- Require Node.js 22.12 or newer and check Node 22/24 in CI.
-- Update vulnerable dependencies and regenerate the MCP catalog.
+- Limit every tool to the properties listed in the optional `GA4_PROPERTY_IDS`. Discovery lists only those properties and the accounts that hold them.
+- Report a revoked refresh token (`invalid_grant`) once, with the steps to authorize again, and stop asking Google for a new token.
+- Bound every response body and give the token request a deadline.
+- Require a Node.js release that carries the October 2026 security fixes, and test Node 22, 24 and 26 in CI.
 
 [Full changelog](CHANGELOG.md) · [Source synchronization details](SOURCE_SYNC.md) · [All releases](https://github.com/get-mcp-ads/google-analytics-mcp-server/releases)
 
 ### Upgrade notes
 
-Requires **Node.js 22.12 or newer**. CI covers Node 22 and 24. Version 2.0.1 drops Node 18 and 20 support. Hosted creative integrations and MCP Apps UI are outside this release.
+Requires **Node.js 22.23.4, 24.22.1 or 26.12.1**, or a newer release of one of these lines. Older releases lack the October 2026 security fixes, and the server prints a warning on stderr when it starts on one. CI covers Node 22, 24 and 26.
+
+This release makes no breaking change to the configuration. One change is announced for 3.0.0: `GA4_PROPERTY_IDS` is optional in 2.x and becomes required. When set, every tool is limited to the listed properties, and `GA4_PROPERTY_ID` must be one of them. When unset, the server starts as before and prints one line on stderr recommending it. The tools and their schemas are unchanged.
 
 ## Install this release
 
 This is a GitHub source release. npm and MCP Registry versions are published separately. The commands below select this exact version; unpinned `npx` examples later in this document select the version currently available on npm.
 
 ```bash
-git clone --branch v2.0.1 --depth 1 https://github.com/get-mcp-ads/google-analytics-mcp-server.git
+git clone --branch v2.1.0 --depth 1 https://github.com/get-mcp-ads/google-analytics-mcp-server.git
 cd google-analytics-mcp-server
 npm ci
 npm run build
@@ -176,7 +178,8 @@ or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
       "env": {
         "GA4_CLIENT_ID": "your-client-id",
         "GA4_CLIENT_SECRET": "your-client-secret",
-        "GA4_REFRESH_TOKEN": "your-refresh-token"
+        "GA4_REFRESH_TOKEN": "your-refresh-token",
+        "GA4_PROPERTY_IDS": "123456789"
       }
     }
   }
@@ -213,6 +216,7 @@ npm start
 | `GA4_CLIENT_SECRET` | none | **Required.** OAuth client secret |
 | `GA4_REFRESH_TOKEN` | none | **Required.** From the consent flow |
 | `GA4_PROPERTY_ID` | none | Optional default, saves passing it on every call |
+| `GA4_PROPERTY_IDS` | *unset* | Recommended. Comma-separated property IDs every tool is limited to. Unset, every property the credentials reach is available. Required in 3.0.0 |
 | `LOG_LEVEL` | `info` | `debug`, `info`, `warn`, `error` |
 
 Check your setup at any time:
@@ -281,6 +285,11 @@ Every tool is listed below. See [server-card.json](server-card.json) for complet
 ## Security
 
 - **The client secret and refresh token are never logged**, at any log level, or written to disk.
+- **A revoked refresh token is reported once.** When Google answers `invalid_grant`, every
+  later call returns the same message with the steps to authorize again, and the server stops
+  asking Google for a token until it restarts.
+- **Properties can be limited.** With `GA4_PROPERTY_IDS` set, a call naming another property
+  is refused before any request, and discovery lists only the allowed properties.
 - **Three hosts are contacted, and only three**: `analyticsdata.googleapis.com`,
   `analyticsadmin.googleapis.com` and `oauth2.googleapis.com`. *A test fails the build if a
   fourth host appears in the source.*

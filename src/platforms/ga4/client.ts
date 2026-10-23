@@ -31,10 +31,11 @@ import {
 } from "./types.js";
 import { logger } from "../../core/logger.js";
 import { RateLimiter } from "../../core/rate-limiter.js";
+import { GoogleTokenSource } from "../../core/google-oauth.js";
+import { MAX_API_RESPONSE_BYTES, MAX_SMALL_RESPONSE_BYTES, readBoundedJson } from "../../core/http.js";
+import { assertResourceAllowed, propertyIsAllowed } from "../../core/account-scope.js";
 
 export { GA4ApiException } from "./types.js";
-
-const GOOGLE_OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token";
 
 export const GA4_ADMIN_COLLECTIONS = {
   accessBindings: { version: "v1alpha", collectionKey: "accessBindings" },
@@ -73,17 +74,24 @@ export type GA4PropertySetting =
 // ============================================
 
 export class GA4Client {
-  private accessToken = "";
-  private tokenExpiresAt = 0;
-  private clientId: string;
-  private clientSecret: string;
-  private refreshToken: string;
   private rateLimiter: RateLimiter;
+  private readonly tokenSource: GoogleTokenSource;
+  private readonly allowedPropertyIds?: readonly string[];
 
-  constructor(config: { clientId: string; clientSecret: string; refreshToken: string }) {
-    this.clientId = config.clientId;
-    this.clientSecret = config.clientSecret;
-    this.refreshToken = config.refreshToken;
+  constructor(config: {
+    clientId: string;
+    clientSecret: string;
+    refreshToken: string;
+    /** Property IDs every request is limited to. Undefined: no allowlist. */
+    allowedPropertyIds?: readonly string[];
+    /** One source per process, so a refused refresh token is met once. */
+    tokenSource?: GoogleTokenSource;
+  }) {
+    this.tokenSource = config.tokenSource ?? new GoogleTokenSource(
+      { clientId: config.clientId, clientSecret: config.clientSecret, refreshToken: config.refreshToken },
+      "GA4_REFRESH_TOKEN",
+    );
+    this.allowedPropertyIds = config.allowedPropertyIds;
     this.rateLimiter = new RateLimiter();
   }
 
@@ -91,55 +99,10 @@ export class GA4Client {
   // PRIVATE METHODS
   // ============================================
 
-  /**
-   * Refresh access token using refresh token.
-   * Google refresh tokens never expire.
-   */
-  private async refreshAccessToken(): Promise<void> {
-    logger.debug("ga4", "Refreshing access token");
-
-    const response = await fetch(GOOGLE_OAUTH_TOKEN_URL, {
-      method: "POST",
-      redirect: "error",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: this.refreshToken,
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({})) as Record<string, string>;
-      logger.error("ga4", "Token refresh failed", { status: response.status, error });
-      throw new GA4ApiException(
-        error.error_description || error.error || "Failed to refresh token",
-        response.status,
-        error.error
-      );
-    }
-
-    const data = await response.json() as { access_token: string; expires_in: number };
-    this.accessToken = data.access_token;
-    // Expire 60 seconds early to avoid edge cases
-    this.tokenExpiresAt = Date.now() + (data.expires_in - 60) * 1000;
-    logger.debug("ga4", "Access token refreshed successfully");
-  }
-
-  /**
-   * Ensure we have a valid access token before making API calls.
-   */
-  private async ensureValidToken(): Promise<void> {
-    if (!this.accessToken || Date.now() >= this.tokenExpiresAt) {
-      await this.refreshAccessToken();
-    }
-  }
-
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
-    await this.ensureValidToken();
+    // Checked before a token is even requested: a refused property costs nothing.
+    assertResourceAllowed(this.allowedPropertyIds, url);
+    const accessToken = await this.tokenSource.getAccessToken();
 
     // 90-second timeout to prevent hanging requests
     const controller = new AbortController();
@@ -154,14 +117,15 @@ export class GA4Client {
         // whatever host the redirect names.
         redirect: "error",
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
           ...options.headers,
         },
       });
 
       if (!response.ok) {
-        const errorBody = await response.json().catch(() => ({})) as Record<string, unknown>;
+        const errorBody = await readBoundedJson<Record<string, unknown>>(response, MAX_SMALL_RESPONSE_BYTES, "GA4 API error")
+          .catch(() => ({})) as Record<string, unknown>;
         const errorDetails = errorBody?.error as Record<string, string> | undefined;
 
         logger.error("ga4", "API Error", { status: response.status, error: errorBody });
@@ -176,7 +140,11 @@ export class GA4Client {
         );
       }
 
-      return response.json() as Promise<T>;
+      const payload = await readBoundedJson<T>(response, MAX_API_RESPONSE_BYTES, "GA4 API");
+      if (typeof payload === "string") {
+        throw new GA4ApiException("GA4 API returned a reply that is not JSON.", 502, "INVALID_RESPONSE");
+      }
+      return payload;
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
         throw new GA4ApiException(
@@ -275,6 +243,8 @@ export class GA4Client {
             for (const prop of account.propertySummaries) {
               // Extract numeric property ID from "properties/123456" format
               const propertyId = prop.property.replace("properties/", "");
+              // Discovery lists only the properties GA4_PROPERTY_IDS allows.
+              if (!propertyIsAllowed(this.allowedPropertyIds, propertyId)) continue;
 
               properties.push({
                 propertyId,
@@ -537,11 +507,37 @@ export class GA4Client {
 
   /** List raw Analytics Admin accounts accessible to the caller. */
   async listAccounts(pageSize = 200): Promise<Record<string, unknown>[]> {
-    return this.listPagedRecords<Record<string, unknown>>(
+    const accounts = await this.listPagedRecords<Record<string, unknown>>(
       `${GA4_ADMIN_API_BASE}/accounts`,
       "accounts",
       pageSize
     );
+    if (this.allowedPropertyIds === undefined) return accounts;
+    // With an allowlist, only the accounts that hold an allowed property are listed.
+    const owners = await this.accountsOfAllowedProperties();
+    return accounts.filter((account) => owners.has(String(account.name ?? "")));
+  }
+
+  /** Account resource names that hold at least one allowed property, from accountSummaries. */
+  private async accountsOfAllowedProperties(): Promise<Set<string>> {
+    const owners = new Set<string>();
+    let pageToken: string | undefined;
+    do {
+      const params = new URLSearchParams({ pageSize: "200" });
+      if (pageToken) params.set("pageToken", pageToken);
+      const response = await this.rateLimiter.execute(() =>
+        this.request<{ accountSummaries?: GA4AccountSummary[]; nextPageToken?: string }>(
+          `${GA4_ADMIN_API_BASE}/accountSummaries?${params.toString()}`
+        )
+      );
+      for (const account of response.accountSummaries ?? []) {
+        if ((account.propertySummaries ?? []).some((prop) => propertyIsAllowed(this.allowedPropertyIds, prop.property))) {
+          owners.add(account.account);
+        }
+      }
+      pageToken = response.nextPageToken;
+    } while (pageToken);
+    return owners;
   }
 
   /**
