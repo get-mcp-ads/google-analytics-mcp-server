@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "google-analytics-mcp-server",
   "display_name": "Google Analytics 4 by getmcpads",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Google Analytics 4 MCP server: 27 read tools, no write tools.",
   "author": {
     "name": "getmcpads",
