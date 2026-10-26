@@ -28,13 +28,13 @@ const dateRangeSchema = z.object({
   startDate: z.string().min(1).describe("YYYY-MM-DD or a GA4 relative date such as 28daysAgo."),
   endDate: z.string().min(1).describe("YYYY-MM-DD or a GA4 relative date such as today."),
 });
-const rawFilterSchema = z.record(z.unknown()).describe("Native GA4 FilterExpression JSON.");
-const rawOrderBySchema = z.record(z.unknown()).describe("Native GA4 OrderBy JSON.");
+const rawFilterSchema = z.record(z.string(), z.unknown()).describe("Native GA4 FilterExpression JSON.");
+const rawOrderBySchema = z.record(z.string(), z.unknown()).describe("Native GA4 OrderBy JSON.");
 const aggregationSchema = z.enum(["TOTAL", "MINIMUM", "MAXIMUM", "COUNT"]);
 
 const reportSchema = z.object({
   dateRanges: z.array(dateRangeSchema).min(1).max(4).optional(),
-  dimensions: z.array(z.string().min(1)).max(9).optional().default([]),
+  dimensions: z.array(z.string().min(1)).max(9).prefault([]),
   metrics: z.array(z.string().min(1)).min(1).max(10),
   dimensionFilter: rawFilterSchema.optional(),
   metricFilter: rawFilterSchema.optional(),
@@ -44,9 +44,9 @@ const reportSchema = z.object({
   keepEmptyRows: z.boolean().optional(),
   metricAggregations: z.array(aggregationSchema).max(4).optional(),
   currencyCode: z.string().length(3).optional(),
-  returnPropertyQuota: z.boolean().optional().default(true),
-  cohortSpec: z.record(z.unknown()).optional().describe("Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."),
-  comparisons: z.array(z.record(z.unknown())).max(4).optional().describe("Native GA4 Comparison objects."),
+  returnPropertyQuota: z.boolean().prefault(true),
+  cohortSpec: z.record(z.string(), z.unknown()).optional().describe("Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."),
+  comparisons: z.array(z.record(z.string(), z.unknown())).max(4).optional().describe("Native GA4 Comparison objects."),
 }).refine((report) => Boolean(report.dateRanges?.length || report.cohortSpec), {
   message: "Provide dateRanges or cohortSpec.",
 });
@@ -68,9 +68,9 @@ const pivotReportSchema = z.object({
   metricFilter: rawFilterSchema.optional(),
   currencyCode: z.string().length(3).optional(),
   keepEmptyRows: z.boolean().optional(),
-  returnPropertyQuota: z.boolean().optional().default(true),
-  cohortSpec: z.record(z.unknown()).optional().describe("Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."),
-  comparisons: z.array(z.record(z.unknown())).max(4).optional().describe("Native GA4 Comparison objects."),
+  returnPropertyQuota: z.boolean().prefault(true),
+  cohortSpec: z.record(z.string(), z.unknown()).optional().describe("Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."),
+  comparisons: z.array(z.record(z.string(), z.unknown())).max(4).optional().describe("Native GA4 Comparison objects."),
 }).refine((report) => Boolean(report.dateRanges?.length || report.cohortSpec), {
   message: "Provide dateRanges or cohortSpec.",
 });
@@ -231,8 +231,8 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
     "Ask the official GA4 Data API which dimensions and metrics are compatible with a proposed Core report selection.",
     {
       propertyId: propertyIdSchema,
-      dimensions: z.array(z.string().min(1)).max(9).optional().default([]),
-      metrics: z.array(z.string().min(1)).max(10).optional().default([]),
+      dimensions: z.array(z.string().min(1)).max(9).prefault([]),
+      metrics: z.array(z.string().min(1)).max(10).prefault([]),
       dimensionFilter: rawFilterSchema.optional(),
       metricFilter: rawFilterSchema.optional(),
       compatibilityFilter: z.enum(["COMPATIBILITY_UNSPECIFIED", "COMPATIBLE", "INCOMPATIBLE"]).optional(),
@@ -266,7 +266,7 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
   server.tool(
     "ga4_list_accounts",
     "List raw GA4 Analytics Admin accounts accessible to the authenticated user (read-only, auto-paginated).",
-    { pageSize: z.number().int().min(1).max(200).optional().default(200) },
+    { pageSize: z.number().int().min(1).max(200).prefault(200) },
     async ({ pageSize }) => {
       try {
         const accounts = await client.listAccounts(pageSize);
@@ -282,8 +282,8 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
     {
       propertyId: propertyIdSchema,
       collection: z.enum(adminCollectionNames),
-      pageSize: z.number().int().min(1).max(200).optional().default(200),
-      includePersonalIdentifiers: z.boolean().optional().default(false)
+      pageSize: z.number().int().min(1).max(200).prefault(200),
+      includePersonalIdentifiers: z.boolean().prefault(false)
         .describe("Access bindings only. Explicitly include user/email identifiers; false redacts them by default."),
     },
     async ({ propertyId, collection, pageSize, includePersonalIdentifiers }) => {
@@ -320,7 +320,7 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
     "Read GA4 property details plus selected singleton Admin settings (attribution, retention, Google Signals, reporting identity, or user-provided-data settings).",
     {
       propertyId: propertyIdSchema,
-      settings: z.array(z.enum(settingNames)).max(settingNames.length).optional().default([]),
+      settings: z.array(z.enum(settingNames)).max(settingNames.length).prefault([]),
     },
     async ({ propertyId, settings }) => {
       try {
@@ -344,8 +344,8 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
     "List existing GA4 Audience Export snapshots and Recurring Audience Lists without creating new exports.",
     {
       propertyId: propertyIdSchema,
-      includeRecurring: z.boolean().optional().default(true),
-      pageSize: z.number().int().min(1).max(200).optional().default(100),
+      includeRecurring: z.boolean().prefault(true),
+      pageSize: z.number().int().min(1).max(200).prefault(100),
     },
     async ({ propertyId, includeRecurring, pageSize }) => {
       try {
@@ -368,9 +368,9 @@ export function registerGA4SurfaceTools(server: McpServer, client: GA4Client): v
     "Query rows from an existing GA4 Audience Export. User/device identifiers are redacted by default; include them only through explicit opt-in.",
     {
       audienceExportName: z.string().regex(/^properties\/[^/]+\/audienceExports\/[^/]+$/),
-      offset: z.number().int().min(0).optional().default(0),
-      limit: z.number().int().min(1).max(10_000).optional().default(100),
-      includePersonalIdentifiers: z.boolean().optional().default(false)
+      offset: z.number().int().min(0).prefault(0),
+      limit: z.number().int().min(1).max(10_000).prefault(100),
+      includePersonalIdentifiers: z.boolean().prefault(false)
         .describe("Explicitly return user/device identifiers. False redacts identifier columns by default."),
     },
     async ({ audienceExportName, offset, limit, includePersonalIdentifiers }) => {

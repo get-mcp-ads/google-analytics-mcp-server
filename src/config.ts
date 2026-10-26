@@ -13,7 +13,7 @@ const configSchema = z.object({
   defaultPropertyId: z.string().optional(),
   /** Property IDs every tool is limited to. Undefined: every property the credentials reach. */
   allowedPropertyIds: z.array(z.string()).optional(),
-  logLevel: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  logLevel: z.enum(["debug", "info", "warn", "error"]).prefault("info"),
 });
 export type GA4Config = z.infer<typeof configSchema>;
 export function loadConfig(): GA4Config {

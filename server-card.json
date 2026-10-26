@@ -2,7 +2,7 @@
   "serverInfo": {
     "name": "@getmcpads/google-analytics-mcp-server",
     "title": "Google Analytics 4 MCP server: 27 read tools, no write tools.",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "websiteUrl": "https://www.getmcpads.com/tools/ga4",
     "icons": [
       {
@@ -20,11 +20,10 @@
         "type": "object",
         "properties": {
           "propertyId": {
-            "type": "string",
-            "description": "Optional property ID to check metadata and property details for"
+            "description": "Optional property ID to check metadata and property details for",
+            "type": "string"
           }
         },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -35,7 +34,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -60,8 +59,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -90,7 +89,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -115,8 +114,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -140,29 +139,30 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "metrics": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "string"
             },
-            "minItems": 1,
             "description": "Metric keys (e.g., sessions, activeUsers, totalRevenue)"
           },
           "dimensions": {
+            "description": "Dimension keys (e.g., date, sessionSource, country)",
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "description": "Dimension keys (e.g., date, sessionSource, country)"
+            }
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
             "type": "string",
             "enum": [
               "today",
@@ -175,45 +175,44 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "orderBy": {
-            "type": "string",
-            "description": "Metric or dimension key to sort by"
+            "description": "Metric or dimension key to sort by",
+            "type": "string"
           },
           "orderDirection": {
+            "description": "Sort direction for the selected ordering field.",
+            "default": "DESC",
             "type": "string",
             "enum": [
               "ASC",
               "DESC"
-            ],
-            "default": "DESC",
-            "description": "Sort direction for the selected ordering field."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 1000,
             "type": "integer",
             "minimum": 1,
-            "maximum": 250000,
-            "default": 1000,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 250000
           },
           "offset": {
+            "description": "Optional 0-based row offset for explicit pagination.",
             "type": "integer",
             "minimum": 0,
-            "description": "Optional 0-based row offset for explicit pagination."
+            "maximum": 9007199254740991
           },
           "autoPaginate": {
-            "type": "boolean",
+            "description": "When true, omit the limit so the GA4 client paginates through all rows using offset.",
             "default": false,
-            "description": "When true, omit the limit so the GA4 client paginates through all rows using offset."
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId",
           "metrics"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -224,7 +223,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -249,8 +248,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -274,36 +273,44 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "metrics": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1,
-            "maxItems": 10,
+            "description": "Realtime metric API names, e.g. activeUsers, eventCount",
             "default": [
               "activeUsers"
             ],
-            "description": "Realtime metric API names, e.g. activeUsers, eventCount"
-          },
-          "dimensions": {
+            "minItems": 1,
+            "maxItems": 10,
             "type": "array",
             "items": {
               "type": "string"
-            },
+            }
+          },
+          "dimensions": {
+            "description": "Realtime dimension API names, e.g. eventName, city, deviceCategory",
             "maxItems": 9,
-            "description": "Realtime dimension API names, e.g. eventName, city, deviceCategory"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "dimensionFilter": {
+            "description": "Native realtime-compatible GA4 FilterExpression JSON.",
             "type": "object",
-            "additionalProperties": {},
-            "description": "Native realtime-compatible GA4 FilterExpression JSON."
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
           },
           "metricFilter": {
+            "description": "Native realtime-compatible GA4 FilterExpression JSON.",
             "type": "object",
-            "additionalProperties": {},
-            "description": "Native realtime-compatible GA4 FilterExpression JSON."
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
           },
           "minuteRanges": {
+            "description": "Optional named realtime minute ranges; zero is the current minute.",
+            "maxItems": 2,
             "type": "array",
             "items": {
               "type": "object",
@@ -321,38 +328,37 @@
                   "minimum": 0,
                   "maximum": 59
                 }
-              },
-              "additionalProperties": false
-            },
-            "maxItems": 2,
-            "description": "Optional named realtime minute ranges; zero is the current minute."
+              }
+            }
           },
           "orderBys": {
+            "description": "Native GA4 OrderBy JSON.",
+            "maxItems": 10,
             "type": "array",
             "items": {
               "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
               "additionalProperties": {}
-            },
-            "maxItems": 10,
-            "description": "Native GA4 OrderBy JSON."
+            }
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 10000,
-            "default": 100,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 10000
           },
           "keepEmptyRows": {
-            "type": "boolean",
+            "description": "Keep provider rows whose selected metrics are all zero, where supported.",
             "default": false,
-            "description": "Keep provider rows whose selected metrics are all zero, where supported."
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -363,7 +369,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -388,8 +394,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -416,7 +422,6 @@
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -427,7 +432,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -452,8 +457,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -480,7 +485,6 @@
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -491,7 +495,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -516,8 +520,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -541,14 +545,16 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -561,22 +567,19 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 1000
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -587,7 +590,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -612,8 +615,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -637,14 +640,16 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -657,22 +662,19 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 1000
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -683,7 +685,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -708,8 +710,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -733,21 +735,23 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "eventNames": {
+            "description": "Optional event names to sample, e.g. purchase, add_to_cart",
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "description": "Optional event names to sample, e.g. purchase, add_to_cart"
+            }
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -760,22 +764,19 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 50,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 50,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 1000
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -786,7 +787,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -811,8 +812,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -836,23 +837,27 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "steps": {
+            "minItems": 2,
+            "maxItems": 10,
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string",
-                  "description": "Optional display name for this funnel step"
+                  "description": "Optional display name for this funnel step",
+                  "type": "string"
                 },
                 "eventName": {
-                  "type": "string",
-                  "description": "GA4 eventName to count for this step"
+                  "description": "GA4 eventName to count for this step",
+                  "type": "string"
                 },
                 "pagePath": {
-                  "type": "string",
-                  "description": "GA4 pagePath to count for this step"
+                  "description": "GA4 pagePath to count for this step",
+                  "type": "string"
                 },
                 "matchType": {
+                  "description": "String match type for pagePath. eventName always uses EXACT.",
+                  "default": "EXACT",
                   "type": "string",
                   "enum": [
                     "EXACT",
@@ -861,18 +866,15 @@
                     "CONTAINS",
                     "FULL_REGEXP",
                     "PARTIAL_REGEXP"
-                  ],
-                  "default": "EXACT",
-                  "description": "String match type for pagePath. eventName always uses EXACT."
+                  ]
                 }
-              },
-              "additionalProperties": false
+              }
             },
-            "minItems": 2,
-            "maxItems": 10,
             "description": "Ordered funnel steps. Each step needs eventName or pagePath."
           },
           "metric": {
+            "description": "Metric used for the analysis; use a name from the platform metric catalogue.",
+            "default": "activeUsers",
             "type": "string",
             "enum": [
               "activeUsers",
@@ -880,19 +882,19 @@
               "sessions",
               "eventCount",
               "screenPageViews"
-            ],
-            "default": "activeUsers",
-            "description": "Metric used for the analysis; use a name from the platform metric catalogue."
+            ]
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -905,16 +907,13 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           }
         },
         "required": [
           "propertyId",
           "steps"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -925,7 +924,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -950,8 +949,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -975,38 +974,37 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "audienceExportName": {
-            "type": "string",
-            "description": "Optional resource name, e.g. properties/123456789/audienceExports/abc123"
+            "description": "Optional resource name, e.g. properties/123456789/audienceExports/abc123",
+            "type": "string"
           },
           "pageSize": {
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100,
-            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+            "maximum": 200
           },
           "includeRowSample": {
-            "type": "boolean",
+            "description": "If true, query a small row sample from audienceExportName. Can include user-level export dimensions.",
             "default": false,
-            "description": "If true, query a small row sample from audienceExportName. Can include user-level export dimensions."
+            "type": "boolean"
           },
           "sampleLimit": {
+            "description": "Maximum records included in the diagnostic sample.",
+            "default": 5,
             "type": "integer",
             "minimum": 1,
-            "maximum": 10,
-            "default": 5,
-            "description": "Maximum records included in the diagnostic sample."
+            "maximum": 10
           },
           "includePersonalIdentifiers": {
-            "type": "boolean",
+            "description": "Explicitly include user/device identifiers in the optional sample. False redacts them by default.",
             "default": false,
-            "description": "Explicitly include user/device identifiers in the optional sample. False redacts them by default."
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1017,7 +1015,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1042,8 +1040,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1067,23 +1065,25 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "recurringAudienceListName": {
-            "type": "string",
-            "description": "Optional resource name, e.g. properties/123456789/recurringAudienceLists/abc123"
+            "description": "Optional resource name, e.g. properties/123456789/recurringAudienceLists/abc123",
+            "type": "string"
           },
           "includeDefinitions": {
-            "type": "boolean",
+            "description": "Include full Admin API audience definitions when available",
             "default": false,
-            "description": "Include full Admin API audience definitions when available"
+            "type": "boolean"
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -1096,22 +1096,19 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
-            "default": 100,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 1000
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1122,7 +1119,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1147,8 +1144,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1172,15 +1169,14 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "includeDataStreams": {
-            "type": "boolean",
+            "description": "Include data stream summaries to compare against BigQuery exportStreams",
             "default": true,
-            "description": "Include data stream summaries to compare against BigQuery exportStreams"
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1191,7 +1187,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1216,8 +1212,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1241,20 +1237,19 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "includeSettings": {
-            "type": "boolean",
+            "description": "Fetch enhanced measurement and data redaction settings for web streams",
             "default": true,
-            "description": "Fetch enhanced measurement and data redaction settings for web streams"
+            "type": "boolean"
           },
           "includeRules": {
-            "type": "boolean",
+            "description": "Fetch event create/edit rules for web streams",
             "default": true,
-            "description": "Fetch event create/edit rules for web streams"
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1265,7 +1260,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1290,8 +1285,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1315,31 +1310,35 @@
             "description": "GA4 property ID (numeric, e.g., 123456789)"
           },
           "steps": {
+            "minItems": 2,
+            "maxItems": 10,
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string",
-                  "description": "Optional display name for this funnel step"
+                  "description": "Optional display name for this funnel step",
+                  "type": "string"
                 },
                 "eventName": {
-                  "type": "string",
-                  "description": "GA4 event name matched by a FunnelEventFilter"
+                  "description": "GA4 event name matched by a FunnelEventFilter",
+                  "type": "string"
                 },
                 "pagePath": {
-                  "type": "string",
-                  "description": "Shortcut for fieldName=pagePath string filter"
+                  "description": "Shortcut for fieldName=pagePath string filter",
+                  "type": "string"
                 },
                 "fieldName": {
-                  "type": "string",
-                  "description": "Optional GA4 field name for a FunnelFieldFilter, e.g. pagePath, pageTitle, deviceCategory"
+                  "description": "Optional GA4 field name for a FunnelFieldFilter, e.g. pagePath, pageTitle, deviceCategory",
+                  "type": "string"
                 },
                 "fieldValue": {
-                  "type": "string",
-                  "description": "String value to match for fieldName"
+                  "description": "String value to match for fieldName",
+                  "type": "string"
                 },
                 "matchType": {
+                  "description": "String match type for pagePath or fieldName",
+                  "default": "EXACT",
                   "type": "string",
                   "enum": [
                     "EXACT",
@@ -1348,72 +1347,69 @@
                     "CONTAINS",
                     "FULL_REGEXP",
                     "PARTIAL_REGEXP"
-                  ],
-                  "default": "EXACT",
-                  "description": "String match type for pagePath or fieldName"
+                  ]
                 },
                 "isDirectlyFollowedBy": {
-                  "type": "boolean",
-                  "description": "Require this step to directly follow the previous step"
+                  "description": "Require this step to directly follow the previous step",
+                  "type": "boolean"
                 },
                 "withinSecondsFromPriorStep": {
+                  "description": "Maximum seconds from the prior step",
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 2592000,
-                  "description": "Maximum seconds from the prior step"
+                  "maximum": 2592000
                 }
-              },
-              "additionalProperties": false
+              }
             },
-            "minItems": 2,
-            "maxItems": 10,
             "description": "Ordered funnel steps using eventName, pagePath, or fieldName+fieldValue"
           },
           "isOpenFunnel": {
-            "type": "boolean",
+            "description": "Allow users to enter at any funnel step instead of requiring the first step.",
             "default": false,
-            "description": "Allow users to enter at any funnel step instead of requiring the first step."
+            "type": "boolean"
           },
           "visualizationType": {
+            "description": "Supported funnel visualization mode.",
+            "default": "STANDARD_FUNNEL",
             "type": "string",
             "enum": [
               "STANDARD_FUNNEL",
               "TRENDED_FUNNEL"
-            ],
-            "default": "STANDARD_FUNNEL",
-            "description": "Supported funnel visualization mode."
+            ]
           },
           "breakdownDimension": {
-            "type": "string",
-            "description": "Optional breakdown dimension, e.g. deviceCategory or sessionDefaultChannelGroup"
+            "description": "Optional breakdown dimension, e.g. deviceCategory or sessionDefaultChannelGroup",
+            "type": "string"
           },
           "breakdownLimit": {
+            "description": "Maximum breakdown values to include in the funnel response.",
+            "default": 10,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50,
-            "default": 10,
-            "description": "Maximum breakdown values to include in the funnel response."
+            "maximum": 50
           },
           "nextActionDimension": {
-            "type": "string",
-            "description": "Optional next action dimension, commonly eventName"
+            "description": "Optional next action dimension, commonly eventName",
+            "type": "string"
           },
           "nextActionLimit": {
+            "description": "Maximum next actions returned for each funnel step.",
+            "default": 10,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50,
-            "default": 10,
-            "description": "Maximum next actions returned for each funnel step."
+            "maximum": 50
           },
           "startDate": {
-            "type": "string",
-            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)",
+            "type": "string"
           },
           "endDate": {
-            "type": "string",
-            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)",
+            "type": "string"
           },
           "datePreset": {
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates.",
+            "default": "last28days",
             "type": "string",
             "enum": [
               "today",
@@ -1426,28 +1422,25 @@
               "thisMonth",
               "lastMonth",
               "thisYear"
-            ],
-            "default": "last28days",
-            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+            ]
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 10000,
             "type": "integer",
             "minimum": 1,
-            "maximum": 250000,
-            "default": 10000,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 250000
           },
           "fallbackToStepCounts": {
-            "type": "boolean",
+            "description": "If the advanced funnel is unavailable, return independent step counts with the limitation made explicit.",
             "default": true,
-            "description": "If the advanced funnel is unavailable, return independent step counts with the limitation made explicit."
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId",
           "steps"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1458,7 +1451,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1483,8 +1476,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1511,7 +1504,6 @@
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1522,7 +1514,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1547,8 +1539,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1568,25 +1560,24 @@
         "type": "object",
         "properties": {
           "metrics": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "string"
             },
-            "minItems": 1,
             "description": "Metric keys to validate"
           },
           "dimensions": {
+            "description": "Dimension keys to validate",
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "description": "Dimension keys to validate"
+            }
           }
         },
         "required": [
           "metrics"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1597,7 +1588,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1622,8 +1613,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1651,6 +1642,8 @@
             "type": "object",
             "properties": {
               "dateRanges": {
+                "minItems": 1,
+                "maxItems": 4,
                 "type": "array",
                 "items": {
                   "type": "object",
@@ -1669,56 +1662,59 @@
                   "required": [
                     "startDate",
                     "endDate"
-                  ],
-                  "additionalProperties": false
-                },
-                "minItems": 1,
-                "maxItems": 4
+                  ]
+                }
               },
               "dimensions": {
+                "minItems": 1,
+                "maxItems": 9,
                 "type": "array",
                 "items": {
                   "type": "string",
                   "minLength": 1
-                },
-                "minItems": 1,
-                "maxItems": 9
+                }
               },
               "metrics": {
+                "minItems": 1,
+                "maxItems": 10,
                 "type": "array",
                 "items": {
                   "type": "string",
                   "minLength": 1
-                },
-                "minItems": 1,
-                "maxItems": 10
+                }
               },
               "pivots": {
+                "minItems": 1,
+                "maxItems": 9,
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
                     "fieldNames": {
+                      "minItems": 1,
+                      "maxItems": 9,
                       "type": "array",
                       "items": {
                         "type": "string",
                         "minLength": 1
-                      },
-                      "minItems": 1,
-                      "maxItems": 9
+                      }
                     },
                     "orderBys": {
+                      "maxItems": 10,
                       "type": "array",
                       "items": {
                         "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
                         "additionalProperties": {},
                         "description": "Native GA4 OrderBy JSON."
-                      },
-                      "maxItems": 10
+                      }
                     },
                     "offset": {
                       "type": "integer",
-                      "minimum": 0
+                      "minimum": 0,
+                      "maximum": 9007199254740991
                     },
                     "limit": {
                       "type": "integer",
@@ -1726,6 +1722,7 @@
                       "maximum": 250000
                     },
                     "metricAggregations": {
+                      "maxItems": 4,
                       "type": "array",
                       "items": {
                         "type": "string",
@@ -1735,26 +1732,29 @@
                           "MAXIMUM",
                           "COUNT"
                         ]
-                      },
-                      "maxItems": 4
+                      }
                     }
                   },
                   "required": [
                     "fieldNames",
                     "limit"
-                  ],
-                  "additionalProperties": false
-                },
-                "minItems": 1,
-                "maxItems": 9
+                  ]
+                }
               },
               "dimensionFilter": {
                 "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
                 "additionalProperties": {},
                 "description": "Native GA4 FilterExpression JSON."
               },
               "metricFilter": {
-                "$ref": "#/properties/report/properties/dimensionFilter",
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {},
                 "description": "Native GA4 FilterExpression JSON."
               },
               "currencyCode": {
@@ -1766,22 +1766,28 @@
                 "type": "boolean"
               },
               "returnPropertyQuota": {
-                "type": "boolean",
-                "default": true
+                "default": true,
+                "type": "boolean"
               },
               "cohortSpec": {
+                "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests.",
                 "type": "object",
-                "additionalProperties": {},
-                "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
               },
               "comparisons": {
+                "description": "Native GA4 Comparison objects.",
+                "maxItems": 4,
                 "type": "array",
                 "items": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
-                },
-                "maxItems": 4,
-                "description": "Native GA4 Comparison objects."
+                }
               }
             },
             "required": [
@@ -1789,7 +1795,6 @@
               "metrics",
               "pivots"
             ],
-            "additionalProperties": false,
             "description": "Native GA4 report request object for this endpoint."
           }
         },
@@ -1797,7 +1802,6 @@
           "propertyId",
           "report"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1808,7 +1812,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -1833,8 +1837,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -1859,11 +1863,15 @@
             "description": "Numeric GA4 property ID or properties/{id}."
           },
           "reports": {
+            "minItems": 1,
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "dateRanges": {
+                  "minItems": 1,
+                  "maxItems": 4,
                   "type": "array",
                   "items": {
                     "type": "object",
@@ -1882,47 +1890,54 @@
                     "required": [
                       "startDate",
                       "endDate"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "minItems": 1,
-                  "maxItems": 4
+                    ]
+                  }
                 },
                 "dimensions": {
+                  "default": [],
+                  "maxItems": 9,
                   "type": "array",
                   "items": {
                     "type": "string",
                     "minLength": 1
-                  },
-                  "maxItems": 9,
-                  "default": []
+                  }
                 },
                 "metrics": {
+                  "minItems": 1,
+                  "maxItems": 10,
                   "type": "array",
                   "items": {
                     "type": "string",
                     "minLength": 1
-                  },
-                  "minItems": 1,
-                  "maxItems": 10
+                  }
                 },
                 "dimensionFilter": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {},
                   "description": "Native GA4 FilterExpression JSON."
                 },
                 "metricFilter": {
-                  "$ref": "#/properties/reports/items/properties/dimensionFilter",
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {},
                   "description": "Native GA4 FilterExpression JSON."
                 },
                 "orderBys": {
+                  "maxItems": 10,
                   "type": "array",
                   "items": {
                     "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
                     "additionalProperties": {},
                     "description": "Native GA4 OrderBy JSON."
-                  },
-                  "maxItems": 10
+                  }
                 },
                 "limit": {
                   "type": "integer",
@@ -1931,12 +1946,14 @@
                 },
                 "offset": {
                   "type": "integer",
-                  "minimum": 0
+                  "minimum": 0,
+                  "maximum": 9007199254740991
                 },
                 "keepEmptyRows": {
                   "type": "boolean"
                 },
                 "metricAggregations": {
+                  "maxItems": 4,
                   "type": "array",
                   "items": {
                     "type": "string",
@@ -1946,8 +1963,7 @@
                       "MAXIMUM",
                       "COUNT"
                     ]
-                  },
-                  "maxItems": 4
+                  }
                 },
                 "currencyCode": {
                   "type": "string",
@@ -1955,31 +1971,34 @@
                   "maxLength": 3
                 },
                 "returnPropertyQuota": {
-                  "type": "boolean",
-                  "default": true
+                  "default": true,
+                  "type": "boolean"
                 },
                 "cohortSpec": {
+                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests.",
                   "type": "object",
-                  "additionalProperties": {},
-                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
                 },
                 "comparisons": {
+                  "description": "Native GA4 Comparison objects.",
+                  "maxItems": 4,
                   "type": "array",
                   "items": {
                     "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
                     "additionalProperties": {}
-                  },
-                  "maxItems": 4,
-                  "description": "Native GA4 Comparison objects."
+                  }
                 }
               },
               "required": [
                 "metrics"
-              ],
-              "additionalProperties": false
+              ]
             },
-            "minItems": 1,
-            "maxItems": 5,
             "description": "Native GA4 report request objects to execute in one batch."
           }
         },
@@ -1987,7 +2006,6 @@
           "propertyId",
           "reports"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -1998,7 +2016,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2023,8 +2041,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2049,11 +2067,15 @@
             "description": "Numeric GA4 property ID or properties/{id}."
           },
           "reports": {
+            "minItems": 1,
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "dateRanges": {
+                  "minItems": 1,
+                  "maxItems": 4,
                   "type": "array",
                   "items": {
                     "type": "object",
@@ -2072,56 +2094,59 @@
                     "required": [
                       "startDate",
                       "endDate"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "minItems": 1,
-                  "maxItems": 4
+                    ]
+                  }
                 },
                 "dimensions": {
+                  "minItems": 1,
+                  "maxItems": 9,
                   "type": "array",
                   "items": {
                     "type": "string",
                     "minLength": 1
-                  },
-                  "minItems": 1,
-                  "maxItems": 9
+                  }
                 },
                 "metrics": {
+                  "minItems": 1,
+                  "maxItems": 10,
                   "type": "array",
                   "items": {
                     "type": "string",
                     "minLength": 1
-                  },
-                  "minItems": 1,
-                  "maxItems": 10
+                  }
                 },
                 "pivots": {
+                  "minItems": 1,
+                  "maxItems": 9,
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
                       "fieldNames": {
+                        "minItems": 1,
+                        "maxItems": 9,
                         "type": "array",
                         "items": {
                           "type": "string",
                           "minLength": 1
-                        },
-                        "minItems": 1,
-                        "maxItems": 9
+                        }
                       },
                       "orderBys": {
+                        "maxItems": 10,
                         "type": "array",
                         "items": {
                           "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
                           "additionalProperties": {},
                           "description": "Native GA4 OrderBy JSON."
-                        },
-                        "maxItems": 10
+                        }
                       },
                       "offset": {
                         "type": "integer",
-                        "minimum": 0
+                        "minimum": 0,
+                        "maximum": 9007199254740991
                       },
                       "limit": {
                         "type": "integer",
@@ -2129,6 +2154,7 @@
                         "maximum": 250000
                       },
                       "metricAggregations": {
+                        "maxItems": 4,
                         "type": "array",
                         "items": {
                           "type": "string",
@@ -2138,26 +2164,29 @@
                             "MAXIMUM",
                             "COUNT"
                           ]
-                        },
-                        "maxItems": 4
+                        }
                       }
                     },
                     "required": [
                       "fieldNames",
                       "limit"
-                    ],
-                    "additionalProperties": false
-                  },
-                  "minItems": 1,
-                  "maxItems": 9
+                    ]
+                  }
                 },
                 "dimensionFilter": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {},
                   "description": "Native GA4 FilterExpression JSON."
                 },
                 "metricFilter": {
-                  "$ref": "#/properties/reports/items/properties/dimensionFilter",
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {},
                   "description": "Native GA4 FilterExpression JSON."
                 },
                 "currencyCode": {
@@ -2169,33 +2198,36 @@
                   "type": "boolean"
                 },
                 "returnPropertyQuota": {
-                  "type": "boolean",
-                  "default": true
+                  "default": true,
+                  "type": "boolean"
                 },
                 "cohortSpec": {
+                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests.",
                   "type": "object",
-                  "additionalProperties": {},
-                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
                 },
                 "comparisons": {
+                  "description": "Native GA4 Comparison objects.",
+                  "maxItems": 4,
                   "type": "array",
                   "items": {
                     "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
                     "additionalProperties": {}
-                  },
-                  "maxItems": 4,
-                  "description": "Native GA4 Comparison objects."
+                  }
                 }
               },
               "required": [
                 "dimensions",
                 "metrics",
                 "pivots"
-              ],
-              "additionalProperties": false
+              ]
             },
-            "minItems": 1,
-            "maxItems": 5,
             "description": "Native GA4 report request objects to execute in one batch."
           }
         },
@@ -2203,7 +2235,6 @@
           "propertyId",
           "reports"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2214,7 +2245,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2239,8 +2270,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2265,48 +2296,54 @@
             "description": "Numeric GA4 property ID or properties/{id}."
           },
           "dimensions": {
+            "description": "Native reporting dimensions. Validate compatibility with the selected metrics.",
+            "default": [],
+            "maxItems": 9,
             "type": "array",
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "maxItems": 9,
-            "default": [],
-            "description": "Native reporting dimensions. Validate compatibility with the selected metrics."
+            }
           },
           "metrics": {
+            "description": "Native or documented calculated metric names to request. Check compatibility with the selected dimensions.",
+            "default": [],
+            "maxItems": 10,
             "type": "array",
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "maxItems": 10,
-            "default": [],
-            "description": "Native or documented calculated metric names to request. Check compatibility with the selected dimensions."
+            }
           },
           "dimensionFilter": {
+            "description": "Native GA4 FilterExpression JSON.",
             "type": "object",
-            "additionalProperties": {},
-            "description": "Native GA4 FilterExpression JSON."
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
           },
           "metricFilter": {
-            "$ref": "#/properties/dimensionFilter",
-            "description": "Native GA4 FilterExpression JSON."
+            "description": "Native GA4 FilterExpression JSON.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
           },
           "compatibilityFilter": {
+            "description": "Limit compatibility results to the requested GA4 compatibility category.",
             "type": "string",
             "enum": [
               "COMPATIBILITY_UNSPECIFIED",
               "COMPATIBLE",
               "INCOMPATIBLE"
-            ],
-            "description": "Limit compatibility results to the requested GA4 compatibility category."
+            ]
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2317,7 +2354,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2342,8 +2379,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2371,7 +2408,6 @@
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2382,7 +2418,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2407,8 +2443,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2428,14 +2464,13 @@
         "type": "object",
         "properties": {
           "pageSize": {
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results.",
+            "default": 200,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 200,
-            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+            "maximum": 200
           }
         },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2446,7 +2481,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2471,8 +2506,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2523,23 +2558,22 @@
             "description": "Allowlisted administrative resource collection to read."
           },
           "pageSize": {
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results.",
+            "default": 200,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 200,
-            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+            "maximum": 200
           },
           "includePersonalIdentifiers": {
-            "type": "boolean",
+            "description": "Access bindings only. Explicitly include user/email identifiers; false redacts them by default.",
             "default": false,
-            "description": "Access bindings only. Explicitly include user/email identifiers; false redacts them by default."
+            "type": "boolean"
           }
         },
         "required": [
           "propertyId",
           "collection"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2550,7 +2584,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2575,8 +2609,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2601,6 +2635,9 @@
             "description": "Numeric GA4 property ID or properties/{id}."
           },
           "settings": {
+            "description": "Property configuration surfaces to inspect.",
+            "default": [],
+            "maxItems": 5,
             "type": "array",
             "items": {
               "type": "string",
@@ -2611,16 +2648,12 @@
                 "reportingIdentitySettings",
                 "userProvidedDataSettings"
               ]
-            },
-            "maxItems": 5,
-            "default": [],
-            "description": "Property configuration surfaces to inspect."
+            }
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2631,7 +2664,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2656,8 +2689,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2682,22 +2715,21 @@
             "description": "Numeric GA4 property ID or properties/{id}."
           },
           "includeRecurring": {
-            "type": "boolean",
+            "description": "Include recurring audience-export configurations.",
             "default": true,
-            "description": "Include recurring audience-export configurations."
+            "type": "boolean"
           },
           "pageSize": {
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
-            "default": 100,
-            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+            "maximum": 200
           }
         },
         "required": [
           "propertyId"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2708,7 +2740,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2733,8 +2765,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,
@@ -2759,28 +2791,28 @@
             "description": "Full GA4 audience-export resource name returned by list_audience_exports."
           },
           "offset": {
+            "description": "Zero-based number of rows to skip before returning results.",
+            "default": 0,
             "type": "integer",
             "minimum": 0,
-            "default": 0,
-            "description": "Zero-based number of rows to skip before returning results."
+            "maximum": 9007199254740991
           },
           "limit": {
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results.",
+            "default": 100,
             "type": "integer",
             "minimum": 1,
-            "maximum": 10000,
-            "default": 100,
-            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+            "maximum": 10000
           },
           "includePersonalIdentifiers": {
-            "type": "boolean",
+            "description": "Explicitly return user/device identifiers. False redacts identifier columns by default.",
             "default": false,
-            "description": "Explicitly return user/device identifiers. False redacts identifier columns by default."
+            "type": "boolean"
           }
         },
         "required": [
           "audienceExportName"
         ],
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
       "outputSchema": {
@@ -2791,7 +2823,7 @@
               {
                 "type": "object",
                 "properties": {},
-                "additionalProperties": true
+                "additionalProperties": {}
               },
               {
                 "type": "array",
@@ -2816,8 +2848,8 @@
         "required": [
           "result"
         ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
       },
       "annotations": {
         "readOnlyHint": true,

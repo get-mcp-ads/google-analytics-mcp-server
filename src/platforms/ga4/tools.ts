@@ -35,7 +35,7 @@ const funnelStepSchema = z.object({
   name: z.string().optional().describe("Optional display name for this funnel step"),
   eventName: z.string().optional().describe("GA4 eventName to count for this step"),
   pagePath: z.string().optional().describe("GA4 pagePath to count for this step"),
-  matchType: matchTypeSchema.optional().default("EXACT").describe("String match type for pagePath. eventName always uses EXACT."),
+  matchType: matchTypeSchema.prefault("EXACT").describe("String match type for pagePath. eventName always uses EXACT."),
 }).refine((step) => Boolean(step.eventName || step.pagePath), {
   message: "Each funnel step must include eventName or pagePath",
 });
@@ -45,7 +45,7 @@ const advancedFunnelStepSchema = z.object({
   pagePath: z.string().optional().describe("Shortcut for fieldName=pagePath string filter"),
   fieldName: z.string().optional().describe("Optional GA4 field name for a FunnelFieldFilter, e.g. pagePath, pageTitle, deviceCategory"),
   fieldValue: z.string().optional().describe("String value to match for fieldName"),
-  matchType: matchTypeSchema.optional().default("EXACT").describe("String match type for pagePath or fieldName"),
+  matchType: matchTypeSchema.prefault("EXACT").describe("String match type for pagePath or fieldName"),
   isDirectlyFollowedBy: z.boolean().optional().describe("Require this step to directly follow the previous step"),
   withinSecondsFromPriorStep: z.number().int().min(1).max(60 * 60 * 24 * 30).optional().describe("Maximum seconds from the prior step"),
 }).refine((step) => Boolean(step.eventName || step.pagePath || (step.fieldName && step.fieldValue)), {
@@ -703,10 +703,10 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
       datePreset: z.enum(["today", "yesterday", "last7days", "last28days", "last30days", "last90days", "last12months", "thisMonth", "lastMonth", "thisYear"]).optional(),
       orderBy: z.string().optional().describe("Metric or dimension key to sort by"),
-      orderDirection: z.enum(["ASC", "DESC"]).optional().default("DESC"),
-      limit: z.number().int().min(1).max(250000).optional().default(1000),
+      orderDirection: z.enum(["ASC", "DESC"]).prefault("DESC"),
+      limit: z.number().int().min(1).max(250000).prefault(1000),
       offset: z.number().int().min(0).optional().describe("Optional 0-based row offset for explicit pagination."),
-      autoPaginate: z.boolean().optional().default(false).describe("When true, omit the limit so the GA4 client paginates through all rows using offset."),
+      autoPaginate: z.boolean().prefault(false).describe("When true, omit the limit so the GA4 client paginates through all rows using offset."),
     },
     async ({ propertyId, metrics, dimensions, startDate, endDate, datePreset, orderBy, orderDirection, limit, offset, autoPaginate }) => {
       try {
@@ -764,18 +764,18 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     "Run a read-only GA4 Data API realtime report. Realtime supports only a limited subset of dimensions and metrics.",
     {
       propertyId: propertyIdSchema,
-      metrics: z.array(z.string()).min(1).max(10).optional().default(["activeUsers"]).describe("Realtime metric API names, e.g. activeUsers, eventCount"),
+      metrics: z.array(z.string()).min(1).max(10).prefault(["activeUsers"]).describe("Realtime metric API names, e.g. activeUsers, eventCount"),
       dimensions: z.array(z.string()).max(9).optional().describe("Realtime dimension API names, e.g. eventName, city, deviceCategory"),
-      dimensionFilter: z.record(z.unknown()).optional().describe("Native realtime-compatible GA4 FilterExpression JSON."),
-      metricFilter: z.record(z.unknown()).optional().describe("Native realtime-compatible GA4 FilterExpression JSON."),
+      dimensionFilter: z.record(z.string(), z.unknown()).optional().describe("Native realtime-compatible GA4 FilterExpression JSON."),
+      metricFilter: z.record(z.string(), z.unknown()).optional().describe("Native realtime-compatible GA4 FilterExpression JSON."),
       minuteRanges: z.array(z.object({
         name: z.string().optional(),
         startMinutesAgo: z.number().int().min(0).max(59).optional(),
         endMinutesAgo: z.number().int().min(0).max(59).optional(),
       })).max(2).optional().describe("Optional named realtime minute ranges; zero is the current minute."),
-      orderBys: z.array(z.record(z.unknown())).max(10).optional().describe("Native GA4 OrderBy JSON."),
-      limit: z.number().int().min(1).max(10000).optional().default(100),
-      keepEmptyRows: z.boolean().optional().default(false),
+      orderBys: z.array(z.record(z.string(), z.unknown())).max(10).optional().describe("Native GA4 OrderBy JSON."),
+      limit: z.number().int().min(1).max(10000).prefault(100),
+      keepEmptyRows: z.boolean().prefault(false),
     },
     async ({ propertyId, metrics, dimensions, dimensionFilter, metricFilter, minuteRanges, orderBys, limit, keepEmptyRows }) => {
       try {
@@ -857,8 +857,8 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
       propertyId: propertyIdSchema,
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
-      limit: z.number().int().min(1).max(1000).optional().default(100),
+      datePreset: datePresetSchema.prefault("last28days"),
+      limit: z.number().int().min(1).max(1000).prefault(100),
     },
     async ({ propertyId, startDate, endDate, datePreset, limit }) => {
       try {
@@ -952,8 +952,8 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
       propertyId: propertyIdSchema,
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
-      limit: z.number().int().min(1).max(1000).optional().default(100),
+      datePreset: datePresetSchema.prefault("last28days"),
+      limit: z.number().int().min(1).max(1000).prefault(100),
     },
     async ({ propertyId, startDate, endDate, datePreset, limit }) => {
       try {
@@ -1104,8 +1104,8 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
       eventNames: z.array(z.string()).optional().describe("Optional event names to sample, e.g. purchase, add_to_cart"),
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
-      limit: z.number().int().min(1).max(1000).optional().default(50),
+      datePreset: datePresetSchema.prefault("last28days"),
+      limit: z.number().int().min(1).max(1000).prefault(50),
     },
     async ({ propertyId, eventNames, startDate, endDate, datePreset, limit }) => {
       try {
@@ -1167,10 +1167,10 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     {
       propertyId: propertyIdSchema,
       steps: z.array(funnelStepSchema).min(2).max(10).describe("Ordered funnel steps. Each step needs eventName or pagePath."),
-      metric: z.enum(["activeUsers", "totalUsers", "sessions", "eventCount", "screenPageViews"]).optional().default("activeUsers"),
+      metric: z.enum(["activeUsers", "totalUsers", "sessions", "eventCount", "screenPageViews"]).prefault("activeUsers"),
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
+      datePreset: datePresetSchema.prefault("last28days"),
     },
     async ({ propertyId, steps, metric, startDate, endDate, datePreset }) => {
       try {
@@ -1248,10 +1248,10 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     {
       propertyId: propertyIdSchema,
       audienceExportName: z.string().optional().describe("Optional resource name, e.g. properties/123456789/audienceExports/abc123"),
-      pageSize: z.number().int().min(1).max(200).optional().default(100),
-      includeRowSample: z.boolean().optional().default(false).describe("If true, query a small row sample from audienceExportName. Can include user-level export dimensions."),
-      sampleLimit: z.number().int().min(1).max(10).optional().default(5),
-      includePersonalIdentifiers: z.boolean().optional().default(false)
+      pageSize: z.number().int().min(1).max(200).prefault(100),
+      includeRowSample: z.boolean().prefault(false).describe("If true, query a small row sample from audienceExportName. Can include user-level export dimensions."),
+      sampleLimit: z.number().int().min(1).max(10).prefault(5),
+      includePersonalIdentifiers: z.boolean().prefault(false)
         .describe("Explicitly include user/device identifiers in the optional sample. False redacts them by default."),
     },
     async ({ propertyId, audienceExportName, pageSize, includeRowSample, sampleLimit, includePersonalIdentifiers }) => {
@@ -1319,11 +1319,11 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     {
       propertyId: propertyIdSchema,
       recurringAudienceListName: z.string().optional().describe("Optional resource name, e.g. properties/123456789/recurringAudienceLists/abc123"),
-      includeDefinitions: z.boolean().optional().default(false).describe("Include full Admin API audience definitions when available"),
+      includeDefinitions: z.boolean().prefault(false).describe("Include full Admin API audience definitions when available"),
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
-      limit: z.number().int().min(1).max(1000).optional().default(100),
+      datePreset: datePresetSchema.prefault("last28days"),
+      limit: z.number().int().min(1).max(1000).prefault(100),
     },
     async ({ propertyId, recurringAudienceListName, includeDefinitions, startDate, endDate, datePreset, limit }) => {
       try {
@@ -1404,7 +1404,7 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     "Detect GA4 BigQuery export links and diagnose export modes, stream coverage, excluded events, and dataset location.",
     {
       propertyId: propertyIdSchema,
-      includeDataStreams: z.boolean().optional().default(true).describe("Include data stream summaries to compare against BigQuery exportStreams"),
+      includeDataStreams: z.boolean().prefault(true).describe("Include data stream summaries to compare against BigQuery exportStreams"),
     },
     async ({ propertyId, includeDataStreams }) => {
       try {
@@ -1474,8 +1474,8 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     "Best-effort read-only server-side tagging diagnostics from data streams, Measurement Protocol secrets, event rules, and stream settings.",
     {
       propertyId: propertyIdSchema,
-      includeSettings: z.boolean().optional().default(true).describe("Fetch enhanced measurement and data redaction settings for web streams"),
-      includeRules: z.boolean().optional().default(true).describe("Fetch event create/edit rules for web streams"),
+      includeSettings: z.boolean().prefault(true).describe("Fetch enhanced measurement and data redaction settings for web streams"),
+      includeRules: z.boolean().prefault(true).describe("Fetch event create/edit rules for web streams"),
     },
     async ({ propertyId, includeSettings, includeRules }) => {
       try {
@@ -1587,17 +1587,17 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
     {
       propertyId: propertyIdSchema,
       steps: z.array(advancedFunnelStepSchema).min(2).max(10).describe("Ordered funnel steps using eventName, pagePath, or fieldName+fieldValue"),
-      isOpenFunnel: z.boolean().optional().default(false),
-      visualizationType: funnelVisualizationTypeSchema.optional().default("STANDARD_FUNNEL"),
+      isOpenFunnel: z.boolean().prefault(false),
+      visualizationType: funnelVisualizationTypeSchema.prefault("STANDARD_FUNNEL"),
       breakdownDimension: z.string().optional().describe("Optional breakdown dimension, e.g. deviceCategory or sessionDefaultChannelGroup"),
-      breakdownLimit: z.number().int().min(1).max(50).optional().default(10),
+      breakdownLimit: z.number().int().min(1).max(50).prefault(10),
       nextActionDimension: z.string().optional().describe("Optional next action dimension, commonly eventName"),
-      nextActionLimit: z.number().int().min(1).max(50).optional().default(10),
+      nextActionLimit: z.number().int().min(1).max(50).prefault(10),
       startDate: z.string().optional().describe("Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"),
       endDate: z.string().optional().describe("End date YYYY-MM-DD or relative (today, yesterday)"),
-      datePreset: datePresetSchema.optional().default("last28days"),
-      limit: z.number().int().min(1).max(250000).optional().default(10000),
-      fallbackToStepCounts: z.boolean().optional().default(true),
+      datePreset: datePresetSchema.prefault("last28days"),
+      limit: z.number().int().min(1).max(250000).prefault(10000),
+      fallbackToStepCounts: z.boolean().prefault(true),
     },
     async ({
       propertyId,
